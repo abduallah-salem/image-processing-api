@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+    <section class="main-section">
+        <img class="main-background" src="images/fjord.jpg" alt="background" srcset="">
+        <div class="main-heading">
+            <h1>Welcome to the image processing API</h1>
+        </div>
+    </section>
+    <section class="form-section">
+        <div class="image-uploader">
+            <form action="/api/upload" enctype="multipart/form-data" method="post">
+                <label for="selectimage">Select the image that you want to upload</label>
+                <input id="select-image" type="file" name="selectimage" required>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </section>
+    <section class="thumbnails">
+        <% let supportedFileExtensions=[`jpg`,`jpeg`,`avif`,`webp`,`tiff`,`png`, `jfif`]; %>
+            <% for (let i=0; i < images.length; i++) { %>
+                <% let currentFileName=images[i].slice((images[i].lastIndexOf(".") + 1), images[i].length); %>
+                    <% if ( supportedFileExtensions.indexOf(currentFileName)> - 1 ) { %>
+                        <div class="thumbnail-container">
+                            <img src="<%= `images/${images[i]}` %>" alt="" class="thumbnail">
+                            <div class="thumbnail-name">
+                                <%- images[i] %>
+                            </div>
+                        </div>
+                        <% }} %>
+    </section>
+    <script>
+        //Get the url parameters from the window.location object
+        const urlParameters = new URLSearchParams(window.location.search);
+        //check if the url parameter message exists or not
+        const message = (urlParameters.has(`message`)) ? urlParameters.get(`message`) : `NA`;
+        //if the message is not equal to `NA` create a div element to contain a file upload notification then append the element to the document body
+        if (message !== 'NA') {
+            const notification = document.createElement('div');
+            notification.classList.add('notification')
+            notification.innerHTML = `<h4>${message}<h4><div class="close">x</div>`;
+            document.querySelector('body').appendChild(notification);
+            //add the active class to show the notification
+            setTimeout(() => {notification.classList.add('active')}, 1000);
+            //add an event listener to the close button to hide the notification
+            document.querySelector('.close').addEventListener('click', (e) => {
+                notification.classList.remove('active');
+            })
+        }
+    </script>
+    <%- include('partials/footer') %>
